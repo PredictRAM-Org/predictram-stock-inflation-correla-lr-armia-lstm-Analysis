@@ -50,7 +50,7 @@ stock_files = [f for f in os.listdir(stock_folder) if f.endswith(".xlsx")]
 st.title("Stock-CPI Correlation Analysis with Expected Inflation, Price Prediction, and Sentiment Analysis")
 
 # User input for comma-separated list of stocks
-selected_stocks_input = st.text_input("Enter Comma-Separated List of Stocks (e.g., stock1,stock2):")
+selected_stocks_input = st.text_input("Enter Comma-Separated List of Stocks (e.g., stock1, stock2):")
 selected_stocks = [stock.strip() for stock in selected_stocks_input.split(',')]
 
 # Select data range for training models
@@ -85,7 +85,8 @@ if st.button("Train Models"):
     stock_names = []
 
     for stock_file in stock_files:
-        stock_name = os.path.splitext(stock_file)[0]
+        stock_name_with_extension = os.path.splitext(stock_file)[0]
+        stock_name = stock_name_with_extension.replace("_data", "")
 
         if selected_stocks and stock_name not in selected_stocks:
             continue  # Skip if stock not in selected_stocks
@@ -147,7 +148,7 @@ if st.button("Train Models"):
         st.write(f"Predicted Price Change for Future Inflation (ARIMA): {future_prices_arima}")
 
         # Predict future prices using LSTM
-        last_observed_price = scaled_data[-3:]  # Use the last 3 observations for prediction
+        last_observed_price = scaled_data[-3:].flatten()
         future_price_lstm = predict_future_lstm(last_observed_price, model_lstm, min_max_scaler)
         st.write(f"Predicted Stock Price for Future Inflation (LSTM): {future_price_lstm}")
 
